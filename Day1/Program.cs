@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Day1
 {
@@ -6,8 +7,18 @@ namespace Day1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(ComputeTask1());
-            Console.WriteLine(ComputeTask2());
+            var timer = new Stopwatch();
+            timer.Start();
+            var task1Result = ComputeTask1();
+            timer.Stop();
+            Console.WriteLine($"Task 1: Time elapsed: {timer.ElapsedMilliseconds} ms. Result is {task1Result}.");
+            timer.Reset();
+            timer.Start();
+            var task2Result = ComputeTask2();
+            timer.Stop();
+            Console.WriteLine($"Task 2: Time elapsed: {timer.ElapsedMilliseconds} ms. Result is {task2Result}");
+            timer.Reset();
+            var a = Console.ReadKey();
         }
 
         private static int ComputeTask1()
