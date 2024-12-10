@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Day1CSharp
 {
@@ -6,23 +7,44 @@ namespace Day1CSharp
     {
         static void Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Please provide a task number (1 or 2) as a command-line argument.");
+                return;
+            }
+
             var timer = new Stopwatch();
-            timer.Start();
-            var task1Result = ComputeTask1();
-            timer.Stop();
-            Console.WriteLine($"Task 1: Time elapsed: {timer.ElapsedMilliseconds} ms. Result is {task1Result}.");
-            timer.Reset();
-            timer.Start();
-            var task2Result = ComputeTask2();
-            timer.Stop();
-            Console.WriteLine($"Task 2: Time elapsed: {timer.ElapsedMilliseconds} ms. Result is {task2Result}");
-            timer.Reset();
-            var a = Console.ReadKey();
+            int taskNumber;
+
+            if (!int.TryParse(args[0], out taskNumber) || (taskNumber != 1 && taskNumber != 2))
+            {
+                Console.WriteLine("Invalid task number. Please provide 1 or 2 as a command-line argument.");
+                return;
+            }
+
+            if (taskNumber == 1)
+            {
+                timer.Start();
+                var task1Result = ComputeTask1();
+                timer.Stop();
+                Console.WriteLine($"Task 1: Time elapsed: {timer.ElapsedMilliseconds} ms. Result is {task1Result}.");
+                timer.Reset();
+            }
+
+            if (taskNumber == 2)
+            {
+                timer.Start();
+                var task2Result = ComputeTask2();
+                timer.Stop();
+                Console.WriteLine($"Task 2: Time elapsed: {timer.ElapsedMilliseconds} ms. Result is {task2Result}.");
+                timer.Reset();
+            }            
         }
 
         private static int ComputeTask1()
         {
             var lists = ReadLists();
+           
             lists.First.Sort();
             lists.Second.Sort();
 
@@ -39,19 +61,35 @@ namespace Day1CSharp
         {
             var lists = ReadLists();
 
-            int result = 0;
-            for (int i = 0; i < lists.First.Count; i++)
+            // Create a dictionary to store the counts of each element in the Second list
+            var secondCounts = new Dictionary<int, int>();
+            foreach (var number in lists.Second)
             {
-                result += lists.First[i] * lists.Second.Count(x => x == lists.First[i]);
+                if (secondCounts.ContainsKey(number))
+                {
+                    secondCounts[number]++;
+                }
+                else
+                {
+                    secondCounts[number] = 1;
+                }
             }
 
-            return result;
+            int result = 0;
+            foreach (var number in lists.First)
+            {
+                if (secondCounts.TryGetValue(number, out int count))
+                {
+                    result += number * count;
+                }
+            }
+
+            return result;            
         }
 
-        private static (List<int> First, List<int> Second) ReadLists()
+        private static TwoLists ReadLists()
         {
-            var first = new List<int>();
-            var second = new List<int>();
+            var twoLists = new TwoLists();
 
             string[] lines = File.ReadAllLines("input1.txt");
 
@@ -61,15 +99,21 @@ namespace Day1CSharp
 
                 if (parts.Length > 0)
                 {
-                    first.Add(int.Parse(parts[0]));
+                    twoLists.First.Add(int.Parse(parts[0]));
                 }
                 if (parts.Length > 1)
                 {
-                    second.Add(int.Parse(parts[1]));
+                    twoLists.Second.Add(int.Parse(parts[1]));
                 }
             }
 
-            return (first, second);
+            return twoLists;
         }
-    }
+
+        private class TwoLists
+        {
+            public List<int> First { get; set; } = new List<int>();
+            public List<int> Second { get; set; } = new List<int>();
+        }
+    }    
 }
