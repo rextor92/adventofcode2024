@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
-namespace Day1
+namespace Day1CSharp
 {
     internal class Program
     {
@@ -39,7 +38,7 @@ namespace Day1
         private static int ComputeTask2()
         {
             var lists = ReadLists();
-           
+
             int result = 0;
             for (int i = 0; i < lists.First.Count; i++)
             {
@@ -72,7 +71,5 @@ namespace Day1
 
             return (first, second);
         }
-
-
     }
 }
